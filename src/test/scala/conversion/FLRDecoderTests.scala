@@ -52,7 +52,7 @@ class FLRDecoderTests extends FlatSpec with Matchers {
   }
   "DebitRecord" should "not construct from invalid values" in {
     faultyLine.as[DebitRecord] should be (
-      Invalid(NEL.of(s"Invalid line pattern `${FLR.RecordPattern.regex}`: '$faultyLine'"))
+      Invalid(NEL.of(s"Invalid line pattern `${FLR.recordPattern.regex}`: '$faultyLine'"))
     )
     emptyLine.as[DebitRecord] should be (
       Invalid(

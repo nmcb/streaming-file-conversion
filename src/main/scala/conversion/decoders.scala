@@ -11,19 +11,19 @@ import scala.util.Try
 import scala.util.matching.Regex
 
 trait Decoder[A] {
-  def decode(str: String): ValidatedNel[Error, A]
+  def decode(str: String): Decoded[A]
 }
 
 object Decoder {
   implicit class DecoderOps(val str: String) {
-    def as[A : Decoder]: ValidatedNel[Error, A] =
+    def as[A : Decoder]: Decoded[A] =
       implicitly[Decoder[A]].decode(str)
   }
 }
 
 object CSV {
 
-  val RecordPattern: Regex =
+  val recordPattern: Regex =
     """\"(.*)\",(.*),(.*),(.*),(.*),(.*)""".r
 
   implicit val birthDayDecoder: Decoder[BirthDay] =
@@ -33,12 +33,12 @@ object CSV {
     DomainDecoders.defaultDebitDecoder()
 
   implicit val debitRecordDecoder: Decoder[DebitRecord] =
-    DomainDecoders.defaultDebitRecordDecoder(RecordPattern)
+    DomainDecoders.defaultDebitRecordDecoder(recordPattern)
 }
 
 object FLR {
 
-  val RecordPattern: Regex =
+  val recordPattern: Regex =
     """(.{16})(.{22})(.{9})(.{14})([0-9|\\ ]{13})(.{8})""".r
 
   implicit val debitDecoder: Decoder[Debit] =
@@ -48,12 +48,12 @@ object FLR {
     DomainDecoders.defaultBirthDayDecoder("yyyyMMdd")
 
   implicit val debitRecordDecoder: Decoder[DebitRecord] =
-    DomainDecoders.defaultDebitRecordDecoder(RecordPattern)
+    DomainDecoders.defaultDebitRecordDecoder(recordPattern)
 }
 
 object DomainDecoders {
 
-  val PhonePattern: Regex = "(\\+[0-9][0-9])?([0-9]+)".r
+  val phonePattern: Regex = "(\\+[0-9][0-9])?([0-9]+)".r
 
   import Decoder._
 
@@ -75,7 +75,7 @@ object DomainDecoders {
 
   implicit val phoneDecoder: Decoder[Phone] = (str: String) =>
     (str.trim.replaceAll("\\-|\\ ", "") match {
-      case PhonePattern(code, number) => valid(Phone(Option(code), number))
+      case phonePattern(code, number) => valid(Phone(Option(code), number))
       case _ => invalid(s"Invalid phone number: '$str'")
     }).toValidatedNel
 
@@ -89,13 +89,13 @@ object DomainDecoders {
       .getOrElse(invalid(s"Invalid birthday: '$str'"))
       .toValidatedNel
 
-  def defaultDebitRecordDecoder(RecordPattern: Regex)(
+  def defaultDebitRecordDecoder(recordPattern: Regex)(
     implicit
     CD: Decoder[Debit],
     BD: Decoder[BirthDay]
   ): Decoder[DebitRecord] = (str: String) => str match {
-      case RecordPattern(c1, c2, c3, c4, c5, c6) =>
-        Apply[ValidatedNel[Error, ?]].map6(
+      case recordPattern(c1, c2, c3, c4, c5, c6) =>
+        Apply[Decoded[?]].map6(
           c1.as[Name],
           c2.as[Address],
           c3.as[PostalCode],
@@ -104,6 +104,6 @@ object DomainDecoders {
           c6.as[BirthDay]
         ) { case (nm, ad, pc, ph, cr, bd) => DebitRecord(nm, ad, pc, ph, cr, bd) }
       case _ =>
-        invalidNel(s"Invalid line pattern `${RecordPattern.regex}`: '$str'")
+        invalidNel(s"Invalid line pattern `${recordPattern.regex}`: '$str'")
     }
 }

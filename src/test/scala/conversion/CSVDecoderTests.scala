@@ -45,7 +45,7 @@ class CSVDecoderTests extends FlatSpec with Matchers {
   "DebitRecord" should "not construct from invalid values" in {
     import CSVFixture._
     faultyLine.as[DebitRecord] should be (
-      Invalid(NEL.of(s"Invalid line pattern `${CSV.RecordPattern.regex}`: '$faultyLine'"))
+      Invalid(NEL.of(s"Invalid line pattern `${CSV.recordPattern.regex}`: '$faultyLine'"))
     )
     emptyLine.as[DebitRecord] should be (
       Invalid(

@@ -32,12 +32,11 @@ object Main extends App with DebitRecordDecoder {
   val output: Path =
     input.resolveSibling(input.getFileName + ".html")
 
-  def writeErrorsToStdOut[F[_]: Sync]: Pipe[F, ValidatedNel[Error, DebitRecord], DebitRecord] = {
-    stream => stream.flatMap[DebitRecord] {
+  def streamErrorsToStdOut[F[_]: Sync]: Pipe[F, Decoded[DebitRecord], DebitRecord] =
+    stream => stream.flatMap {
       case Valid(record)   => Stream.emit(record)
       case Invalid(errors) => Stream.eval_(implicitly[Sync[F]].delay(errors.map(println)))
     }
-  }
 
   def emit[F[_]: Sync](string: String): Stream[F, Byte] =
     Stream.emit(string).through(text.utf8Encode)
@@ -50,7 +49,7 @@ object Main extends App with DebitRecordDecoder {
       .through(text.utf8Decode)
       .through(text.lines)
       .map(_.as[DebitRecord])
-      .through(writeErrorsToStdOut)
+      .through(streamErrorsToStdOut)
       .map(_.render)
       .through(text.utf8Encode)
 
