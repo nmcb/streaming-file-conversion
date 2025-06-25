@@ -3,9 +3,10 @@ package conversion
 import java.time.LocalDate
 
 import cats.data.Validated.{Invalid, Valid}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.should.*
 
-class FLRDecoderTests extends FlatSpec with Matchers {
+class FLRDecoderTests extends AnyFlatSpec with Matchers {
 
   import Decoder._
   import FLR._

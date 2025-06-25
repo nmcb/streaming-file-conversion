@@ -2,10 +2,11 @@ package conversion
 
 import java.time.LocalDate
 
-import cats.data.Validated.{Invalid, Valid}
-import org.scalatest.{FlatSpec, Matchers}
+import cats.data.Validated.*
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.should.*
 
-class CSVDecoderTests extends FlatSpec with Matchers {
+class CSVDecoderTests extends AnyFlatSpec with Matchers {
 
   import Decoder._
   import CSV._

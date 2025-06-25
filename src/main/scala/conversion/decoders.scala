@@ -93,17 +93,17 @@ object DomainDecoders {
     implicit
     CD: Decoder[Debit],
     BD: Decoder[BirthDay]
-  ): Decoder[DebitRecord] = (str: String) => str match {
-      case recordPattern(c1, c2, c3, c4, c5, c6) =>
-        Apply[Decoded[?]].map6(
-          c1.as[Name],
-          c2.as[Address],
-          c3.as[PostalCode],
-          c4.as[Phone],
-          c5.as[Debit],
-          c6.as[BirthDay]
-        ) { case (nm, ad, pc, ph, cr, bd) => DebitRecord(nm, ad, pc, ph, cr, bd) }
-      case _ =>
-        invalidNel(s"Invalid line pattern `${recordPattern.regex}`: '$str'")
-    }
+  ): Decoder[DebitRecord] = {
+    case recordPattern(c1, c2, c3, c4, c5, c6) =>
+      Apply.apply(using Apply[Decoded]).map6(
+        c1.as[Name],
+        c2.as[Address],
+        c3.as[PostalCode],
+        c4.as[Phone],
+        c5.as[Debit],
+        c6.as[BirthDay]
+      ) { case (nm, ad, pc, ph, cr, bd) => DebitRecord(nm, ad, pc, ph, cr, bd) }
+    case str =>
+      invalidNel(s"Invalid line pattern `${recordPattern.regex}`: '$str'")
+  }
 }
