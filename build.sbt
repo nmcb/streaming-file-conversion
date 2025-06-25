@@ -3,23 +3,23 @@ import sbt.Keys._
 lazy val `streaming-file-conversion` = (project in file("."))
   .settings(
     dependencies,
-    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4")
+    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.10")
   )
 
 
 lazy val dependencies = Seq(
   libraryDependencies ++= Seq(
     // main
-    "org.typelevel" %% "cats-core"   % "1.1.0",
-    "org.typelevel" %% "cats-effect" % "0.10.1",
+    "org.typelevel" %% "cats-core"   % "1.6.1",
+    "org.typelevel" %% "cats-effect" % "3.6.1",
     "co.fs2"        %% "fs2-core"    % "0.10.7",
     "co.fs2"        %% "fs2-io"      % "0.10.7",
     // test
-    "org.scalatest" %% "scalatest"   % "3.0.5" % "test"
+    "org.scalatest" %% "scalatest"   % "3.0.9" % "test"
   )
 )
 
-scalacOptions in ThisBuild ++= Seq(
+(ThisBuild / scalacOptions) ++= Seq(
   "-unchecked",
   "-feature",
   "-deprecation",
@@ -28,4 +28,4 @@ scalacOptions in ThisBuild ++= Seq(
   "-Ypartial-unification"
 )
 
-evictionWarningOptions in update := EvictionWarningOptions.empty
+(update / evictionWarningOptions) := EvictionWarningOptions.empty
