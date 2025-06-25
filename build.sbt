@@ -19,7 +19,7 @@ lazy val dependencies = Seq(
   )
 )
 
-scalacOptions in ThisBuild ++= Seq(
+(ThisBuild / scalacOptions) ++= Seq(
   "-unchecked",
   "-feature",
   "-deprecation",
@@ -28,4 +28,4 @@ scalacOptions in ThisBuild ++= Seq(
   "-Ypartial-unification"
 )
 
-evictionWarningOptions in update := EvictionWarningOptions.empty
+(update / evictionWarningOptions) := EvictionWarningOptions.empty
