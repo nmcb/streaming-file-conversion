@@ -1,19 +1,17 @@
 package conversion
 
-trait Html[A] {
+trait Html[A]:
   def toHtml(a: A): String
-}
 
-object Html {
-  implicit class HtmlOps[A : Html](val a: A) {
+
+object Html:
+  extension [A : Html](a: A)
     def render: String =
       implicitly[Html[A]].toHtml(a)
-  }
-}
 
-object DebitLineHtml {
+object DebitLineHtml:
 
-  import Html._
+  import Html.*
 
   val header: String =
     s"""<html>
@@ -33,25 +31,25 @@ object DebitLineHtml {
   val footer: String =
     s"</table></body></html>" + '\n'
 
-  implicit val nameHtml: Html[Name] = (name: Name) =>
+  given nameHtml: Html[Name] = (name: Name) =>
     s"<td><b>${name.last} (${name.first})</b></td>"
 
-  implicit val addressHtml: Html[Address] = (address: Address) =>
+  given addressHtml: Html[Address] = (address: Address) =>
     s"<td>${address.value}</td>"
 
-  implicit val postalCodeHtml: Html[PostalCode] = (postalCode: PostalCode) =>
+  given postalCodeHtml: Html[PostalCode] = (postalCode: PostalCode) =>
     s"<td>${postalCode.value}</td>"
 
-  implicit val phoneHtml: Html[Phone] = (phone: Phone) =>
+  given phoneHtml: Html[Phone] = (phone: Phone) =>
     s"<td>${phone.toPhoneString}</td>"
 
-  implicit val debitHtml: Html[Debit] = (debit: Debit) =>
+  given debitHtml: Html[Debit] = (debit: Debit) =>
     s"<td><b>${debit.show}</b></td>"
 
-  implicit val birthDay: Html[BirthDay] = (birthDay: BirthDay) =>
+  given birthDay: Html[BirthDay] = (birthDay: BirthDay) =>
     s"<td><i>${birthDay.date}</i></td>"
 
-  implicit val debitRecordHtml: Html[DebitRecord] = (record: DebitRecord) =>
+  given debitRecordHtml: Html[DebitRecord] = (record: DebitRecord) =>
     s"""<tr>
        |  ${record.name.render}
        |  ${record.address.render}
@@ -61,5 +59,3 @@ object DebitLineHtml {
        |  ${record.birthDay.render}
        |</tr>
      """.stripMargin.trim + '\n'
-
-}

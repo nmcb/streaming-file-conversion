@@ -10,17 +10,21 @@ case class Address(value: String)
 
 case class PostalCode(value: String)
 
-case class Phone(country: Option[String], number: String) {
+case class Phone(country: Option[String], number: String):
+
   def toPhoneString: String =
     country.getOrElse("") + number
+
   def isInternational: Boolean =
     country.nonEmpty
-}
 
-case class Debit(value: Double) {
+
+case class Debit(value: Double):
+
   def show: String =
-    NumberFormat.getCurrencyInstance(Locale.forLanguageTag("nl-NL")).format(value)
-}
+    NumberFormat
+      .getCurrencyInstance(Locale.forLanguageTag("nl-NL"))
+      .format(value)
 
 case class BirthDay(date: LocalDate)
 
