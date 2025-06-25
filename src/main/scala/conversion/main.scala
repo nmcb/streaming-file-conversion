@@ -3,10 +3,9 @@ package conversion
 import cats.effect.*
 import fs2.{Pipe, Stream, io, text}
 
-import java.nio.file.{Path, Paths}
 import cats.data.Validated.{Invalid, Valid}
 import cats.data.ValidatedNel
-import fs2.io.file.Files
+import fs2.io.file.*
 
 trait DebitRecordDecoder {
 
@@ -29,16 +28,16 @@ object Main extends App with DebitRecordDecoder {
   import DebitLineHtml._
 
   val input: Path =
-    if (args.isEmpty) Paths.get("data.csv")
-    else Paths.get(args.head)
+    if (args.isEmpty) Path("data.csv")
+    else Path(args.head)
 
   val output: Path =
-    input.resolveSibling(input.getFileName.toString + ".html")
+    input.resolveSibling(input.toString + ".html")
 
   def streamErrorsToStdOut[F[_]: Async]: Pipe[F, Decoded[DebitRecord], DebitRecord] =
     stream => stream.flatMap {
       case Valid(record)   => Stream.emit(record)
-      case Invalid(errors) => Stream.eval_(implicitly[Sync[F]].delay(errors.map(println)))
+      case Invalid(errors) => Stream.exec(implicitly[Sync[F]].delay(errors.map(println)))
     }
 
   def emit[F[_]: Async](string: String): Stream[F, Byte] =
@@ -48,7 +47,7 @@ object Main extends App with DebitRecordDecoder {
     debitRecorderDecoder(input)
 
   def records[F[_]: Async]: Stream[F, Byte] = {
-    io.file.readAll[F](input, 4096)
+    Files(using Files.forAsync).readAll(input, 4096, Flags.Read)
       .through(text.utf8.decode)
       .through(text.lines)
       .map(_.as[DebitRecord])
@@ -61,7 +60,7 @@ object Main extends App with DebitRecordDecoder {
     emit(header) ++ records ++ emit(footer)
 
   html[IO]
-    .through(io.file.writeAll(output))
+    .through(Files[IO].writeAll(output))
     .compile
     .drain
     .unsafeRunSync()

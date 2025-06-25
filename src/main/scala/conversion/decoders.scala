@@ -95,7 +95,7 @@ object DomainDecoders {
     BD: Decoder[BirthDay]
   ): Decoder[DebitRecord] = {
     case recordPattern(c1, c2, c3, c4, c5, c6) =>
-      Apply.apply(using Apply[Decoded]).map6(
+      Apply(using Apply[Decoded]).map6(
         c1.as[Name],
         c2.as[Address],
         c3.as[PostalCode],
