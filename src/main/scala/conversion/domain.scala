@@ -19,7 +19,7 @@ case class Phone(country: Option[String], number: String) {
 
 case class Debit(value: Double) {
   def show: String =
-    NumberFormat.getCurrencyInstance(new Locale("nl", "NL")).format(value)
+    NumberFormat.getCurrencyInstance(Locale.forLanguageTag("nl-NL")).format(value)
 }
 
 case class BirthDay(date: LocalDate)

@@ -18,10 +18,10 @@ lazy val dependencies = Seq(
   )
 )
 
-(ThisBuild / scalacOptions) ++= Seq(
+ThisBuild / scalacOptions ++= Seq(
   "-unchecked",
   "-feature",
-  // "-deprecation",
+  "-deprecation",
   "-language:higherKinds",
   "-language:implicitConversions"
 )
