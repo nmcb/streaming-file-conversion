@@ -1,3 +1,4 @@
+import cats.Apply
 import cats.data.{NonEmptyList, ValidatedNel}
 
 package object conversion {

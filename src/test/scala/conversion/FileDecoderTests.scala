@@ -1,9 +1,10 @@
 package conversion
 
 import cats.data.Validated.{Invalid, Valid}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.*
+import org.scalatest.matchers.should.*
 
-class FileDecoderTests extends FlatSpec with Matchers {
+class FileDecoderTests extends AnyFlatSpec with Matchers {
 
   import Decoder._
   import DomainDecoders._
