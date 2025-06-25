@@ -10,7 +10,7 @@ lazy val `streaming-file-conversion` = (project in file("."))
 lazy val dependencies = Seq(
   libraryDependencies ++= Seq(
     // main
-    "org.typelevel" %% "cats-core"   % "1.1.0",
+    "org.typelevel" %% "cats-core"   % "1.6.1",
     "org.typelevel" %% "cats-effect" % "3.6.1",
     "co.fs2"        %% "fs2-core"    % "0.10.4",
     "co.fs2"        %% "fs2-io"      % "0.10.4",
@@ -19,7 +19,7 @@ lazy val dependencies = Seq(
   )
 )
 
-scalacOptions in ThisBuild ++= Seq(
+(ThisBuild / scalacOptions) ++= Seq(
   "-unchecked",
   "-feature",
   "-deprecation",
@@ -28,4 +28,4 @@ scalacOptions in ThisBuild ++= Seq(
   "-Ypartial-unification"
 )
 
-evictionWarningOptions in update := EvictionWarningOptions.empty
+(update / evictionWarningOptions) := EvictionWarningOptions.empty
