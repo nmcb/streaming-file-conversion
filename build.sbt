@@ -15,7 +15,7 @@ lazy val dependencies = Seq(
     "co.fs2"        %% "fs2-core"    % "0.10.4",
     "co.fs2"        %% "fs2-io"      % "0.10.4",
     // test
-    "org.scalatest" %% "scalatest"   % "3.0.5" % "test"
+    "org.scalatest" %% "scalatest"   % "3.0.9" % "test"
   )
 )
 
