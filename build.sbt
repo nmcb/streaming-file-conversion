@@ -3,7 +3,7 @@ import sbt.Keys._
 lazy val `streaming-file-conversion` = (project in file("."))
   .settings(
     dependencies,
-    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4")
+    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.10")
   )
 
 
