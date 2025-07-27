@@ -16,7 +16,7 @@ trait Decoder[A]:
 object Decoder:
   extension (str: String)
     def as[A : Decoder]: Decoded[A] =
-      implicitly[Decoder[A]].decode(str)
+      summon[Decoder[A]].decode(str)
 
 
 object CSV:

@@ -34,12 +34,12 @@ object Main extends App with DebitRecordDecoder:
   def streamErrorsToStdOut[F[_]: Async]: Pipe[F, Decoded[DebitRecord], DebitRecord] =
     stream => stream.flatMap:
       case Valid(record)   => Stream.emit(record)
-      case Invalid(errors) => Stream.exec(implicitly[Sync[F]].delay(errors.map(println)))
+      case Invalid(errors) => Stream.exec(summon[Sync[F]].delay(errors.map(println)))
 
   def emit[F[_]: Async](string: String): Stream[F, Byte] =
     Stream.emit(string).through(text.utf8.encode)
 
-  implicit val debitRecordDecoder: Decoder[DebitRecord] =
+  given Decoder[DebitRecord] =
     debitRecorderDecoder(input)
 
   def records[F[_]: Async]: Stream[F, Byte] =

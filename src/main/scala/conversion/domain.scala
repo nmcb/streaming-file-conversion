@@ -18,7 +18,6 @@ case class Phone(country: Option[String], number: String):
   def isInternational: Boolean =
     country.nonEmpty
 
-
 case class Debit(value: Double):
 
   def show: String =
