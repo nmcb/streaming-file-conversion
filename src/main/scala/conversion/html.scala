@@ -7,7 +7,7 @@ trait Html[A]:
 object Html:
   extension [A : Html](a: A)
     def render: String =
-      implicitly[Html[A]].toHtml(a)
+      summon[Html[A]].toHtml(a)
 
 object DebitLineHtml:
 
