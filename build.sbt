@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "3.8.3"
+ThisBuild / scalaVersion := "3.8.4"
 ThisBuild / version      := "0.1.0"
 
 lazy val `streaming-file-conversion` =
