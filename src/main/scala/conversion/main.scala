@@ -15,8 +15,8 @@ trait DebitRecordDecoder:
       case s => sys.error(s"Unsupported file extension: '${s.reverse.takeWhile(_ != '.').reverse}'")
 
 
-object Main extends App with DebitRecordDecoder:
-
+case class Main(args: Seq[String]) extends DebitRecordDecoder:
+  
   import cats.effect.unsafe.implicits.global
 
   import Decoder.*
@@ -25,8 +25,7 @@ object Main extends App with DebitRecordDecoder:
   import DebitLineHtml.given
 
   val input: Path =
-    if (args.isEmpty) Path("data.csv")
-    else Path(args.head)
+    if args.isEmpty then Path("data.csv") else Path(args.head)
 
   val output: Path =
     input.resolveSibling(input.toString + ".html")
@@ -54,8 +53,14 @@ object Main extends App with DebitRecordDecoder:
   def html[F[_]: Async]: Stream[F, Byte] =
     emit(header) ++ records ++ emit(footer)
 
-  html[IO]
-    .through(Files[IO].writeAll(output))
-    .compile
-    .drain
-    .unsafeRunSync()
+  def run(): Unit =
+    html[IO]
+      .through(Files[IO].writeAll(output))
+      .compile
+      .drain
+      .unsafeRunSync()    
+
+object Main:  
+  @main
+  def run(args: String*): Unit =
+    Main(args.toSeq).run()
